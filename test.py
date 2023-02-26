@@ -2,8 +2,8 @@
 from main import get_adj, get_coord
 import pytest
 
-ADJACENCIES_FILE_PATH = 'adjacencies_test.txt'
-COORDINATES_FILE_PATH = 'coordinates_test.txt'
+ADJ_TEST_FILE_PATH = 'adjacencies_test.txt'
+COORD_TEST_FILE_PATH = 'coordinates_test.txt'
 
 def test_get_adj() :
 
@@ -13,7 +13,7 @@ def test_get_adj() :
         'Augusta': ['Winfield', 'Andover', 'Leon', 'Wichita']
     }
 
-    adj_dict = get_adj(ADJACENCIES_FILE_PATH)
+    adj_dict = get_adj(ADJ_TEST_FILE_PATH)
 
     assert exp_adj_dict == adj_dict
 
@@ -25,6 +25,6 @@ def test_get_coord() :
         'Anthony': (37.1575168, -98.0728946)
     }
 
-    coord_dict = get_coord(COORDINATES_FILE_PATH)
+    coord_dict = get_coord(COORD_TEST_FILE_PATH)
 
     assert exp_coord_dict == coord_dict
