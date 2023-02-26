@@ -155,15 +155,22 @@ def get_best_first_path(adj_dict, coord_dict, start_node, dest_node):
 
 
 def display_graph(adj_dict, coord_dict, path=None):
+    '''
+    Displays the graph given the adjacency and coordinate dictionaries, and a path.
+    '''
+
+    # adapt the parsed adj dict and coord dict into an nx graph
     G = nx.Graph()
     G.add_nodes_from(adj_dict.keys())
+
     for node, neighbors in adj_dict.items():
         for neighbor in neighbors:
             G.add_edge(node, neighbor)
+
     nx.set_node_attributes(G, coord_dict, 'pos')
     pos = nx.get_node_attributes(G, 'pos')
 
-    # Create a dictionary to store edge and node colors
+    # dictionaries to store edge and node colors
     edge_colors = {}
     node_colors = {}
     for node in G.nodes():
@@ -171,19 +178,22 @@ def display_graph(adj_dict, coord_dict, path=None):
     for edge in G.edges():
         edge_colors[edge] = 'grey'
 
-    # Color the edges and nodes in the path with a different color
+    # color the edges and nodes in the path with a different color
     if path:
         path_edges = list(zip(path, path[1:]))
+
         for edge in G.edges():
+
             if edge in path_edges or edge[::-1] in path_edges:
                 edge_colors[edge] = 'orange'
                 node_colors[edge[0]] = 'orange'
                 node_colors[edge[1]] = 'orange'
-        # Color the start and destination nodes green
+
+        # the start node is red, and the dest node is green
         node_colors[path[0]] = 'red'
         node_colors[path[-1]] = 'green'
 
-    # Draw the graph with edge and node colors
+    # display the graph
     nx.draw(G, pos, with_labels=True, edge_color=[edge_colors[edge] for edge in G.edges()], node_color=[node_colors[node] for node in G.nodes()])
     plt.show()
 
