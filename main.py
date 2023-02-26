@@ -89,7 +89,7 @@ def get_node_name_input(node_names, prompt) :
 
             continue
 
-def display_graph(adj_dict, coord_dict):
+def display_graph(adj_dict, coord_dict, path=None):
     G = nx.Graph()
     G.add_nodes_from(adj_dict.keys())
     for node, neighbors in adj_dict.items():
@@ -97,8 +97,31 @@ def display_graph(adj_dict, coord_dict):
             G.add_edge(node, neighbor)
     nx.set_node_attributes(G, coord_dict, 'pos')
     pos = nx.get_node_attributes(G, 'pos')
-    nx.draw(G, pos, with_labels=True)
+
+    # Create a dictionary to store edge and node colors
+    edge_colors = {}
+    node_colors = {}
+    for node in G.nodes():
+        node_colors[node] = 'blue'
+    for edge in G.edges():
+        edge_colors[edge] = 'blue'
+
+    # Color the edges and nodes in the path with a different color
+    if path:
+        path_edges = list(zip(path, path[1:]))
+        for edge in G.edges():
+            if edge in path_edges or edge[::-1] in path_edges:
+                edge_colors[edge] = 'red'
+                node_colors[edge[0]] = 'red'
+                node_colors[edge[1]] = 'red'
+        # Color the start and destination nodes green
+        node_colors[path[0]] = 'green'
+        node_colors[path[-1]] = 'green'
+
+    # Draw the graph with edge and node colors
+    nx.draw(G, pos, with_labels=True, edge_color=[edge_colors[edge] for edge in G.edges()], node_color=[node_colors[node] for node in G.nodes()])
     plt.show()
+
 
 
 def main() :
@@ -112,7 +135,9 @@ def main() :
     start_node_name = get_node_name_input(node_names, f'{options}\nEnter the starting city index from the options above. ')
     dest_node_name = get_node_name_input(node_names, f'{options}\nEnter the destination city index from the options above. ')
 
-    display_graph(adj_dict, coord_dict)
+    path = ['Harper', 'Anthony', 'Attica', 'Medicine_Lodge']
+
+    display_graph(adj_dict, coord_dict, path)
 
 if __name__ == '__main__' :
     main()
