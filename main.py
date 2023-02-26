@@ -1,4 +1,6 @@
 
+import matplotlib.pyplot as plt
+import networkx as nx
 import time
 
 ADJ_FILE_PATH = 'adjacencies.txt'
@@ -87,6 +89,18 @@ def get_node_name_input(node_names, prompt) :
 
             continue
 
+def display_graph(adj_dict, coord_dict):
+    G = nx.Graph()
+    G.add_nodes_from(adj_dict.keys())
+    for node, neighbors in adj_dict.items():
+        for neighbor in neighbors:
+            G.add_edge(node, neighbor)
+    nx.set_node_attributes(G, coord_dict, 'pos')
+    pos = nx.get_node_attributes(G, 'pos')
+    nx.draw(G, pos, with_labels=True)
+    plt.show()
+
+
 def main() :
 
     adj_dict = get_adj(ADJ_FILE_PATH)
@@ -98,7 +112,7 @@ def main() :
     start_node_name = get_node_name_input(node_names, f'{options}\nEnter the starting city index from the options above. ')
     dest_node_name = get_node_name_input(node_names, f'{options}\nEnter the destination city index from the options above. ')
 
-
+    display_graph(adj_dict, coord_dict)
 
 if __name__ == '__main__' :
     main()
