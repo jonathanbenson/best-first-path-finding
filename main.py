@@ -89,6 +89,61 @@ def get_node_name_input(node_names, prompt) :
 
             continue
 
+def greedy_path(adj_dict, coord_dict, start_node, end_node):
+    # Calculate Euclidean distance between two coordinates
+    def euclidean_distance(coord1, coord2):
+        return ((coord1[0] - coord2[0]) ** 2 + (coord1[1] - coord2[1]) ** 2) ** 0.5
+
+    # Create a networkx graph from the adjacency dictionary
+    G = nx.Graph()
+    G.add_nodes_from(adj_dict.keys())
+    for node, neighbors in adj_dict.items():
+        for neighbor in neighbors:
+            G.add_edge(node, neighbor, weight=euclidean_distance(coord_dict[node], coord_dict[neighbor]))
+
+    # Create a dictionary to keep track of the distance from start_node to each node
+    distance_dict = {node: float('inf') for node in G.nodes()}
+    distance_dict[start_node] = 0
+
+    # Create a dictionary to keep track of the parent of each node in the path
+    parent_dict = {node: None for node in G.nodes()}
+
+    # Initialize the current node and the list of visited nodes
+    current_node = start_node
+    visited_nodes = set()
+
+    # Loop until the current node is the end node or there are no more nodes to visit
+    while current_node != end_node and len(visited_nodes) < len(G.nodes()):
+        visited_nodes.add(current_node)
+        # Find the neighbor closest to the end node
+        neighbor_dists = [(n, euclidean_distance(coord_dict[n], coord_dict[end_node])) for n in G.neighbors(current_node) if n not in visited_nodes]
+        if not neighbor_dists:
+            # If no neighbors can be reached, backtrack to the previous node
+            current_node = parent_dict[current_node]
+            continue
+        neighbor_dists.sort(key=lambda x: x[1])
+        neighbor = neighbor_dists[0][0]
+        # Update the distance and parent dictionaries with the new node
+        distance_dict[neighbor] = distance_dict[current_node] + G[current_node][neighbor]['weight']
+        parent_dict[neighbor] = current_node
+        current_node = neighbor
+
+    # If the end node was not found, return an empty path
+    if current_node != end_node:
+        return []
+
+    # Create the path from the parent dictionary
+    path = [end_node]
+    current_node = end_node
+    while current_node != start_node:
+        current_node = parent_dict[current_node]
+        path.append(current_node)
+    path.reverse()
+
+    return path
+
+
+
 def display_graph(adj_dict, coord_dict, path=None):
     G = nx.Graph()
     G.add_nodes_from(adj_dict.keys())
@@ -135,7 +190,7 @@ def main() :
     start_node_name = get_node_name_input(node_names, f'{options}\nEnter the starting city index from the options above. ')
     dest_node_name = get_node_name_input(node_names, f'{options}\nEnter the destination city index from the options above. ')
 
-    path = ['Harper', 'Anthony', 'Attica', 'Medicine_Lodge']
+    path = greedy_path(adj_dict, coord_dict, start_node_name, dest_node_name)
 
     display_graph(adj_dict, coord_dict, path)
 
