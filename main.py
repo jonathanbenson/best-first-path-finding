@@ -154,7 +154,7 @@ def get_best_first_path(adj_dict, coord_dict, start_node, dest_node):
 
 
 
-def display_graph(adj_dict, coord_dict, path=None):
+def display_graph(adj_dict, coord_dict, path):
     '''
     Displays the graph given the adjacency and coordinate dictionaries, and a path.
     '''
@@ -179,7 +179,7 @@ def display_graph(adj_dict, coord_dict, path=None):
         edge_colors[edge] = 'grey'
 
     # color the edges and nodes in the path with a different color
-    if path:
+    if len(path) > 0 :
         path_edges = list(zip(path, path[1:]))
 
         for edge in G.edges():
