@@ -1,4 +1,6 @@
 
+import time
+
 ADJ_FILE_PATH = 'adjacencies.txt'
 COORD_FILE_PATH = 'coordinates.txt'
 
@@ -63,7 +65,7 @@ def get_coord(coord_file_path) :
 
     return coord_dict
 
-def get_node_index_input(num_nodes, prompt) :
+def get_node_name_input(node_names, prompt) :
 
     while True :
 
@@ -71,14 +73,17 @@ def get_node_index_input(num_nodes, prompt) :
 
             index = int(input(prompt))
 
-            if index < 0 or index >= num_nodes :
-                raise ValueError()
+            node_name = node_names[index]
 
-            break
+            print(f'You chose \'{node_name}\'')
 
-        except ValueError :
+            time.sleep(1.5)
 
-            print(f'Error. Select a number from 0 to {num_nodes - 1}')
+            return node_name
+
+        except (ValueError, IndexError) :
+
+            print(f'Error. Select a number from 0 to {len(node_names) - 1}')
 
             continue
 
@@ -87,11 +92,11 @@ def main() :
     adj_dict = get_adj(ADJ_FILE_PATH)
     coord_dict = get_coord(COORD_FILE_PATH)
 
-    num_nodes = len(coord_dict.keys())
+    node_names = [k for k in coord_dict.keys()]
     options = '\n'.join([str(i) + ' - ' + city_name for i, city_name in enumerate(coord_dict.keys())])
 
-    first_city_index = get_node_index_input(num_nodes, f'{options}\nEnter the starting city index from the options above. ')
-    second_city_index = get_node_index_input(num_nodes, f'{options}\nEnter the destination city index from the options above. ')
+    start_node_name = get_node_name_input(node_names, f'{options}\nEnter the starting city index from the options above. ')
+    dest_node_name = get_node_name_input(node_names, f'{options}\nEnter the destination city index from the options above. ')
 
 
 
