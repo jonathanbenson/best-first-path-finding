@@ -68,17 +68,23 @@ def get_coord(coord_file_path) :
     return coord_dict
 
 def get_node_name_input(node_names, prompt) :
+    '''
+    Prompts the user to enter an index number corresponding to
+    the name of a node they want to select as either the start or destination.
+    '''
 
     while True :
 
         try :
 
+            # if the user does not enter an int, it will raise a ValueError
             index = int(input(prompt))
 
+            # if the int the user entered is not a valid index, it will raise an IndexError
             node_name = node_names[index]
 
+            # tell the user the node name corresponding to the index number they chose
             print(f'You chose \'{node_name}\'')
-
             time.sleep(1.5)
 
             return node_name
@@ -90,6 +96,25 @@ def get_node_name_input(node_names, prompt) :
             continue
 
 def get_best_first_path(adj_dict, coord_dict, start_node, dest_node):
+    '''
+    Finds a path between the start and end nodes using a greedy algorithm that picks the node that is closest to the
+    dest node first. If no path exists, returns an empty list.
+
+    params :
+        - adj_dict (dict): A dictionary representing the adjacency of the graph. The keys of the dictionary are the nodes
+            of the graph, and the values are lists of the adjacent nodes.
+        - coord_dict (dict): A dictionary representing the coordinates of the nodes in the graph. The keys of the
+            dictionary are the nodes of the graph, and the values are tuples of the x and y coordinates of the node.
+        - start_node (str): The starting node for the path.
+        - end_node (str): The ending node for the path.
+
+    return :
+        list: A list of nodes representing the path from the start node to the end node, or an empty list if no path
+        exists.
+
+    errors :
+        ValueError: If the start or end node is not in the graph.
+    '''
 
     # calculate Euclidean distance between two coordinates
     def euclidean_distance(coord1, coord2):
@@ -201,17 +226,25 @@ def display_graph(adj_dict, coord_dict, path):
 
 def main() :
 
+    # retrieve the adjacency and coordinate dictionaries
     adj_dict = get_adj(ADJ_FILE_PATH)
     coord_dict = get_coord(COORD_FILE_PATH)
 
+    # names of the nodes
     node_names = [k for k in coord_dict.keys()]
+
+    # <index> - <node name>
+    # a string used to show which indices go with which node names
     options = '\n'.join([str(i) + ' - ' + city_name for i, city_name in enumerate(coord_dict.keys())])
 
-    start_node_name = get_node_name_input(node_names, f'{options}\nEnter the starting city index from the options above. ')
-    dest_node_name = get_node_name_input(node_names, f'{options}\nEnter the destination city index from the options above. ')
+    # get start and dest node from user input
+    start_node_name = get_node_name_input(node_names, f'{options}\nEnter the starting node index from the options above. ')
+    dest_node_name = get_node_name_input(node_names, f'{options}\nEnter the destination node index from the options above. ')
 
+    # compute the best-first path
     path = get_best_first_path(adj_dict, coord_dict, start_node_name, dest_node_name)
 
+    # display the graph
     display_graph(adj_dict, coord_dict, path)
 
 if __name__ == '__main__' :
