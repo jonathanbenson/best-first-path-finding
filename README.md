@@ -6,6 +6,8 @@ the program contained in `main.py` computes the shortest path between two nodes 
 The greedy search heuristic simply picks the node closest to the destination until it either reaches the destination or a dead-end. If it reaches a 
 dead-end, the search backtracks to the previous parent node and continuous the search.
 
+The screenshot below showcases a shortest path computed from Topeka to Anthony, Kansas.
+
 ![Screenshot](screenshot.png)
 
 ### Required Python Dependencies
