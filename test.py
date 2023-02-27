@@ -1,5 +1,5 @@
 
-from main import get_adj, get_coord
+from main import ADJ_FILE_PATH, COORD_FILE_PATH, get_adj, get_coord, get_best_first_path
 import pytest
 
 ADJ_TEST_FILE_PATH = 'adjacencies_test.txt'
@@ -28,3 +28,19 @@ def test_get_coord() :
     coord_dict = get_coord(COORD_TEST_FILE_PATH)
 
     assert exp_coord_dict == coord_dict
+
+def test_get_best_first_path() :
+
+    adj_dict = get_adj(ADJ_FILE_PATH)
+    coord_dict = get_coord(COORD_FILE_PATH)
+
+    # normal, but long path
+    assert get_best_first_path(adj_dict, coord_dict, 'Topeka', 'Anthony') == \
+        ['Topeka', 'Junction_City', 'Marion', 'Newton', 'Wichita', 'Cheney', 'Kingman', 'Pratt', 'Sawyer', 'Rago', 'Harper', 'Anthony']
+
+    # same start and dest node
+    assert get_best_first_path(adj_dict, coord_dict, 'Topeka', 'Topeka') == ['Topeka']
+
+    # adjacent start and dest node
+    assert get_best_first_path(adj_dict, coord_dict, 'Pratt', 'Kingman') == ['Pratt', 'Kingman']
+
